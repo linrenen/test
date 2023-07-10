@@ -1,0 +1,32 @@
+name: publish packages
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  execute-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14
+
+      - name: Execute Script
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { execSync } = require('child_process');
+
+            // 获取此次 commit 修改的文件
+            const modifiedFiles = execSync('git diff --name-only HEAD~1 HEAD').toString().split('\n');
+            console.log('Modified files:', modifiedFiles);
+
+            // 在这里执行你的自定义脚本，使用 modifiedFiles 进行相应的处理
